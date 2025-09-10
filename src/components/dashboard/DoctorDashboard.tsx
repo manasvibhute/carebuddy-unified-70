@@ -11,8 +11,10 @@ import { EndCallScreen } from "../video/EndCallScreen";
 import { PatientNotes } from "../notes/PatientNotes";
 import { Button } from "@/components/ui/button";
 import { VoiceButton } from "../voice/VoiceButton";
+import { ReportsList } from "../reports/ReportsList";
+import { PatientsList } from "../patients/PatientsList";
 
-type DoctorView = "dashboard" | "appointments" | "pre-call" | "in-call" | "end-call" | "notes";
+type DoctorView = "dashboard" | "appointments" | "pre-call" | "in-call" | "end-call" | "notes" | "reports" | "patients";
 
 interface DoctorDashboardProps {
   onLogout: () => void;
@@ -54,6 +56,7 @@ export const DoctorDashboard = ({ onLogout }: DoctorDashboardProps) => {
       description: "Manage patient records",
       icon: Users,
       count: "45 active",
+      action: () => setCurrentView("patients"),
       bgColor: "bg-accent-light"
     },
     {
@@ -61,6 +64,7 @@ export const DoctorDashboard = ({ onLogout }: DoctorDashboardProps) => {
       description: "Review test results",
       icon: FileText,
       count: "12 pending",
+      action: () => setCurrentView("reports"),
       bgColor: "bg-medical-light-blue"
     },
     {
@@ -142,6 +146,29 @@ export const DoctorDashboard = ({ onLogout }: DoctorDashboardProps) => {
       <PatientNotes
         onBack={handleBackToDashboard}
         appointmentId={selectedAppointmentId}
+      />
+    );
+  }
+
+  if (currentView === "reports") {
+    return (
+      <ReportsList
+        onBack={handleBackToDashboard}
+        onScanNew={() => {}}
+        onViewReport={(reportId) => {
+          console.log("Viewing report:", reportId);
+        }}
+      />
+    );
+  }
+
+  if (currentView === "patients") {
+    return (
+      <PatientsList
+        onBack={handleBackToDashboard}
+        onViewPatient={(patientId) => {
+          console.log("Viewing patient:", patientId);
+        }}
       />
     );
   }
