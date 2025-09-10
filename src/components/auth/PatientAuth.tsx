@@ -29,12 +29,12 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   const { isAvailable, getBiometryTypeName } = useBiometricAuth();
 
   useEffect(() => {
-    // Check if we should show biometric auth for login
-    if (isLogin && isAvailable) {
-      setUseBiometric(true);
-      setShowBiometric(true);
+    // Reset biometric state when switching between login/signup
+    if (!isLogin) {
+      setUseBiometric(false);
+      setShowBiometric(false);
     }
-  }, [isLogin, isAvailable]);
+  }, [isLogin]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -118,16 +118,28 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
             </p>
           </div>
 
-          {isLogin && isAvailable && !useBiometric && (
+          {isLogin && isAvailable && (
             <div className="mb-6">
               <Button
                 onClick={handleBiometricLogin}
-                className="w-full bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-white rounded-xl h-12 shadow-lg mb-3"
+                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white rounded-xl h-14 shadow-lg mb-3 transition-all duration-200 hover:scale-[1.02]"
               >
-                <Fingerprint className="h-5 w-5 mr-2" />
-                Login with Biometrics
+                <div className="flex items-center justify-center gap-3">
+                  <div className="relative">
+                    <Fingerprint className="h-6 w-6" />
+                    <div className="absolute inset-0 animate-pulse bg-white/20 rounded-full"></div>
+                  </div>
+                  <div className="text-left">
+                    <div className="font-semibold">Use {getBiometryTypeName()}</div>
+                    <div className="text-xs opacity-90">Tap and place your finger</div>
+                  </div>
+                </div>
               </Button>
-              <div className="text-center text-muted-foreground text-sm">or use email & password</div>
+              <div className="flex items-center gap-2 justify-center text-muted-foreground text-sm">
+                <div className="h-px bg-border flex-1"></div>
+                <span>or use email & password</span>
+                <div className="h-px bg-border flex-1"></div>
+              </div>
             </div>
           )}
 
