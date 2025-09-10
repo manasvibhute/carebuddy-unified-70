@@ -1,65 +1,71 @@
-import { useState } from 'react';
-import { Fingerprint, Eye, Shield, User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { useBiometricAuth } from '@/hooks/useBiometricAuth';
-import { useToast } from '@/hooks/use-toast';
-import { BiometryType } from '@/utils/biometric-fallback';
+import { useState } from "react";
+import { User, Phone } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import { useBiometricAuth } from "@/hooks/useBiometricAuth";
 
-interface BiometricAuthProps {
+interface PatientBiometricAuthProps {
   onSuccess: () => void;
   onFallback: () => void;
   onCancel: () => void;
 }
 
-export const BiometricAuth = ({ onSuccess, onFallback, onCancel }: BiometricAuthProps) => {
+export const PatientBiometricAuth = ({
+  onSuccess,
+  onFallback,
+  onCancel,
+}: PatientBiometricAuthProps) => {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
-  const { isAvailable, biometryType, authenticate, getBiometryTypeName } = useBiometricAuth();
+  const { authenticate, isAvailable } = useBiometricAuth();
   const { toast } = useToast();
 
-  const getBiometricIcon = () => {
-    switch (biometryType) {
-      case BiometryType.TOUCH_ID:
-      case BiometryType.FINGERPRINT:
-        return <Fingerprint className="h-16 w-16 text-primary" />;
-      case BiometryType.FACE_ID:
-      case BiometryType.FACE_AUTHENTICATION:
-        return <Eye className="h-16 w-16 text-primary" />;
-      case BiometryType.IRIS_AUTHENTICATION:
-        return <Eye className="h-16 w-16 text-primary" />;
-      default:
-        return <Shield className="h-16 w-16 text-primary" />;
-    }
-  };
-
   const handleBiometricAuth = async () => {
+    if (!name || !phone) {
+      toast({
+        title: "Missing Information",
+        description: "Please enter both name and phone number",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!isAvailable) {
+      toast({
+        title: "Biometric Not Available",
+        description: "Falling back to manual login",
+        variant: "destructive",
+      });
+      onFallback();
+      return;
+    }
+
     setIsAuthenticating(true);
-    
     try {
-      const result = await authenticate('Authenticate to access your healthcare account');
-      
+      const result = await authenticate("Place your thumb on the scanner");
+
       if (result.success) {
         toast({
-          title: 'Authentication Successful',
-          description: 'Welcome back!',
+          title: "Authentication Successful",
+          description: `Welcome ${name}!`,
         });
         onSuccess();
       } else {
         toast({
-          title: 'Authentication Failed',
-          description: result.error || 'Please try again or use manual login',
-          variant: 'destructive',
+          title: "Authentication Failed",
+          description: result.error || "Please try again or use manual login",
+          variant: "destructive",
         });
-        
-        if (result.fallback) {
-          onFallback();
-        }
+        onFallback();
       }
-    } catch (error) {
+    } catch (err) {
       toast({
-        title: 'Authentication Error',
-        description: 'An unexpected error occurred',
-        variant: 'destructive',
+        title: "Authentication Error",
+        description: "Something went wrong",
+        variant: "destructive",
       });
       onFallback();
     } finally {
@@ -67,68 +73,75 @@ export const BiometricAuth = ({ onSuccess, onFallback, onCancel }: BiometricAuth
     }
   };
 
-  if (!isAvailable) {
-    onFallback();
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-medical-light-blue to-medical-light-green flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8 bg-card shadow-lg">
-        <div className="text-center space-y-6">
-          <div className="flex justify-center">
-            {getBiometricIcon()}
-          </div>
-          
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-medical-light-blue to-medical-light-green p-4">
+      <Card className="w-full max-w-md p-8 shadow-lg">
+        <div className="space-y-6">
+          <h1 className="text-2xl font-bold text-center">Patient Login</h1>
+          <p className="text-center text-muted-foreground">
+            Enter your details and authenticate with biometrics
+          </p>
+
+          {/* Name Input */}
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold text-foreground">
-              Secure Login
-            </h1>
-            <p className="text-muted-foreground">
-              Use {getBiometryTypeName()} to access your account securely
-            </p>
+            <label className="block text-sm font-medium">Patient Name</label>
+            <Input
+              type="text"
+              placeholder="Enter your name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              icon={<User className="h-4 w-4" />}
+            />
           </div>
 
-          <div className="space-y-4">
+          {/* Phone Number Input */}
+          <div className="space-y-2">
+            <label className="block text-sm font-medium">Phone Number</label>
+            <Input
+              type="tel"
+              placeholder="Enter phone number"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              icon={<Phone className="h-4 w-4" />}
+            />
+          </div>
+
+          {/* Biometric Section */}
+          <div className="flex flex-col items-center space-y-4 pt-4">
+            {/* 👇 Replace fingerprint icon with image */}
+            <img
+              src="/fingerprint.png"
+              alt="Fingerprint Scanner"
+              className="h-20 w-20 mx-auto"
+            />
+
+            <p className="text-sm font-medium">Place your thumb on the scanner</p>
+
             <Button
               onClick={handleBiometricAuth}
               disabled={isAuthenticating}
-              size="lg"
               className="w-full"
             >
-              {isAuthenticating ? (
-                <div className="flex items-center gap-2">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
-                  Authenticating...
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  {getBiometricIcon()}
-                  Authenticate with {getBiometryTypeName()}
-                </div>
-              )}
+              {isAuthenticating ? "Authenticating..." : "Authenticate with Fingerprint"}
             </Button>
 
-            <div className="space-y-2">
-              <Button
-                variant="outline"
-                onClick={onFallback}
-                className="w-full"
-                disabled={isAuthenticating}
-              >
-                <User className="h-4 w-4 mr-2" />
-                Use Manual Login
-              </Button>
-              
-              <Button
-                variant="ghost"
-                onClick={onCancel}
-                className="w-full"
-                disabled={isAuthenticating}
-              >
-                Cancel
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={onFallback}
+              disabled={isAuthenticating}
+            >
+              Use Manual Login
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full"
+              onClick={onCancel}
+              disabled={isAuthenticating}
+            >
+              Cancel
+            </Button>
           </div>
         </div>
       </Card>
