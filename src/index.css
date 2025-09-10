@@ -57,6 +57,16 @@
     --medical-light-blue: 210 100% 95%;
     --medical-light-green: 145 65% 95%;
 
+    /* Modern gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--accent)/0.1), hsl(var(--primary)/0.05), hsl(var(--medical-light-blue)));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card)/0.95));
+
+    /* Enhanced shadows */
+    --shadow-soft: 0 4px 24px -1px hsl(var(--foreground)/0.08);
+    --shadow-medium: 0 8px 32px -4px hsl(var(--foreground)/0.12);
+    --shadow-strong: 0 16px 40px -8px hsl(var(--foreground)/0.16);
+
     /* Success states */
     --success: 145 65% 45%;
     --success-foreground: 0 0% 100%;

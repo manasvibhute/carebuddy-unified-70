@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Heart, Shield, Clock } from "lucide-react";
+import { Heart, Shield, Clock, Users, Timer, Lock } from "lucide-react";
 
 interface HomePageProps {
   onLogin: () => void;
@@ -9,59 +9,114 @@ interface HomePageProps {
 
 export const HomePage = ({ onLogin, onSignup }: HomePageProps) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-medical-light-blue to-medical-light-green p-4 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-accent/10 via-primary/5 to-medical-light-blue">
       {/* Header */}
-      <div className="text-center pt-12 pb-8">
-        <div className="flex items-center justify-center mb-4">
-          <Heart className="h-12 w-12 text-medical-blue mr-2" />
-          <h1 className="text-3xl font-bold text-medical-blue">HealthCare</h1>
+      <header className="flex items-center justify-between p-6">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-accent rounded-xl">
+            <Heart className="h-6 w-6 text-white" />
+          </div>
+          <span className="text-xl font-bold text-foreground">HealthCare</span>
         </div>
-        <p className="text-xl text-foreground/80 font-medium">
-          Your Health, Your Care, Anytime.
-        </p>
-      </div>
-
-      {/* Features */}
-      <div className="flex-1 flex flex-col justify-center space-y-6 max-w-sm mx-auto w-full">
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <Card className="p-4 text-center bg-white/80 backdrop-blur-sm border-0">
-            <Heart className="h-8 w-8 text-medical-blue mx-auto mb-2" />
-            <p className="text-sm font-medium text-foreground/80">Care</p>
-          </Card>
-          <Card className="p-4 text-center bg-white/80 backdrop-blur-sm border-0">
-            <Shield className="h-8 w-8 text-medical-green mx-auto mb-2" />
-            <p className="text-sm font-medium text-foreground/80">Safe</p>
-          </Card>
-          <Card className="p-4 text-center bg-white/80 backdrop-blur-sm border-0">
-            <Clock className="h-8 w-8 text-medical-blue mx-auto mb-2" />
-            <p className="text-sm font-medium text-foreground/80">24/7</p>
-          </Card>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-4">
-          <Button 
-            onClick={onLogin}
-            className="w-full h-14 text-lg font-semibold rounded-xl bg-medical-blue hover:bg-medical-blue/90"
-          >
+        <nav className="hidden md:flex items-center space-x-8">
+          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Home</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">About</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Resources</a>
+          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Contact</a>
+        </nav>
+        <div className="flex items-center space-x-3">
+          <Button variant="ghost" onClick={onLogin} className="hidden md:flex">
             Login
           </Button>
-          <Button 
-            onClick={onSignup}
-            variant="outline"
-            className="w-full h-14 text-lg font-semibold rounded-xl border-2 border-medical-blue text-medical-blue hover:bg-medical-blue/10"
-          >
-            Sign Up
+          <Button onClick={onSignup} className="bg-accent hover:bg-accent/90 text-white rounded-xl px-6">
+            Get Started
           </Button>
         </div>
-      </div>
+      </header>
 
-      {/* Footer */}
-      <div className="text-center pt-8 pb-4">
-        <p className="text-sm text-foreground/60">
-          Connecting you with quality healthcare
-        </p>
-      </div>
+      {/* Main Content */}
+      <main className="px-6 py-12 md:py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Content */}
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                  <span className="text-foreground">Your Health, </span>
+                  <span className="text-accent">Your Care, Anytime.</span>
+                </h1>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-lg">
+                  Take our quick, science-backed assessment to understand your health needs. 
+                  Get personalized care recommendations in minutes.
+                </p>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                <div className="flex items-center space-x-2">
+                  <Users className="h-4 w-4 text-accent" />
+                  <span>50K+ Users Trusted</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Timer className="h-4 w-4 text-accent" />
+                  <span>5 Min Assessment</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Lock className="h-4 w-4 text-accent" />
+                  <span>Privacy Protected</span>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  onClick={onSignup}
+                  size="lg"
+                  className="bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-white rounded-xl px-8 h-14 text-lg font-semibold shadow-lg"
+                >
+                  Start Your Assessment →
+                </Button>
+                <Button 
+                  onClick={onLogin}
+                  variant="outline"
+                  size="lg"
+                  className="rounded-xl px-8 h-14 text-lg font-semibold border-2 hover:bg-accent/5"
+                >
+                  Learn More
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Side - Illustration Area */}
+            <div className="relative">
+              <div className="bg-gradient-to-br from-accent/20 to-primary/20 rounded-3xl p-8 md:p-12 backdrop-blur-sm">
+                <div className="grid grid-cols-2 gap-6">
+                  <Card className="p-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+                    <Heart className="h-10 w-10 text-accent mb-4" />
+                    <h3 className="font-semibold text-foreground mb-2">Personalized Care</h3>
+                    <p className="text-sm text-muted-foreground">Tailored health recommendations just for you</p>
+                  </Card>
+                  <Card className="p-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0 mt-8">
+                    <Shield className="h-10 w-10 text-primary mb-4" />
+                    <h3 className="font-semibold text-foreground mb-2">Secure & Safe</h3>
+                    <p className="text-sm text-muted-foreground">Your health data is always protected</p>
+                  </Card>
+                  <Card className="p-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0 -mt-4">
+                    <Clock className="h-10 w-10 text-accent mb-4" />
+                    <h3 className="font-semibold text-foreground mb-2">24/7 Access</h3>
+                    <p className="text-sm text-muted-foreground">Get care whenever you need it</p>
+                  </Card>
+                  <Card className="p-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0 mt-4">
+                    <Users className="h-10 w-10 text-primary mb-4" />
+                    <h3 className="font-semibold text-foreground mb-2">Expert Team</h3>
+                    <p className="text-sm text-muted-foreground">Connect with certified healthcare professionals</p>
+                  </Card>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

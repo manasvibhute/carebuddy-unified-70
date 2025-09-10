@@ -39,7 +39,7 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name || !phone) {
+    if (!email || !password) {
       toast({
         title: "Missing Information",
         description: "Please fill in all required fields",
@@ -94,13 +94,13 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-medical-light-blue to-medical-light-green p-4 flex flex-col justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-accent/10 via-primary/5 to-medical-light-blue p-4 flex flex-col justify-center">
       <div className="max-w-md mx-auto w-full">
         <div className="flex justify-between items-center mb-4">
           <Button
             variant="ghost"
             onClick={onBack}
-            className="p-2"
+            className="p-2 hover:bg-white/20 rounded-xl"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
@@ -108,7 +108,7 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
           <VoiceButton />
         </div>
 
-        <Card className="p-6 shadow-lg">
+        <Card className="p-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-foreground mb-2">
               Patient {isLogin ? "Login" : "Signup"}
@@ -122,90 +122,98 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
             <div className="mb-6">
               <Button
                 onClick={handleBiometricLogin}
-                className="w-full bg-primary hover:bg-primary-hover text-primary-foreground mb-3"
+                className="w-full bg-gradient-to-r from-accent to-accent/80 hover:from-accent/90 hover:to-accent/70 text-white rounded-xl h-12 shadow-lg mb-3"
               >
                 <Fingerprint className="h-5 w-5 mr-2" />
-                Login with {getBiometryTypeName()}
+                Login with Biometrics
               </Button>
-              <div className="text-center text-muted-foreground text-sm">or use manual login</div>
+              <div className="text-center text-muted-foreground text-sm">or use email & password</div>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <Label htmlFor="name">Full Name *</Label>
-              <VoiceInput
-                value={name}
-                onChange={setName}
-                placeholder="Enter your full name"
+              <Label htmlFor="email">Email Address *</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
                 className="mt-1"
+                required
               />
             </div>
 
             <div>
-              <Label htmlFor="phone">Phone Number *</Label>
-              <VoiceInput
-                value={phone}
-                onChange={setPhone}
-                placeholder="Enter your phone number"
-                className="mt-1"
-              />
+              <Label htmlFor="password">Password *</Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="pr-10"
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-0 top-0 h-full px-3"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
             </div>
 
-            {!isLogin && (
-              <>
-                <div>
-                  <Label htmlFor="email">Email Address</Label>
-                  <VoiceInput
-                    value={email}
-                    onChange={setEmail}
-                    placeholder="Enter your email address"
-                    className="mt-1"
-                  />
-                </div>
+             {!isLogin && (
+               <>
+                 <div>
+                   <Label htmlFor="name">Full Name</Label>
+                   <Input
+                     id="name"
+                     type="text"
+                     value={name}
+                     onChange={(e) => setName(e.target.value)}
+                     placeholder="Enter your full name"
+                     className="mt-1"
+                   />
+                 </div>
 
-                <div>
-                  <Label htmlFor="password">Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={showPassword ? "text" : "password"}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Create a secure password"
-                      className="pr-10"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-0 top-0 h-full px-3"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                 <div>
+                   <Label htmlFor="phone">Phone Number</Label>
+                   <Input
+                     id="phone"
+                     type="tel"
+                     value={phone}
+                     onChange={(e) => setPhone(e.target.value)}
+                     placeholder="Enter your phone number"
+                     className="mt-1"
+                   />
+                 </div>
 
-                <div>
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="confirmPassword"
-                      type={showPassword ? "text" : "password"}
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Confirm your password"
-                      className="pr-10"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
+                 <div>
+                   <Label htmlFor="confirmPassword">Confirm Password</Label>
+                   <div className="relative">
+                     <Input
+                       id="confirmPassword"
+                       type={showPassword ? "text" : "password"}
+                       value={confirmPassword}
+                       onChange={(e) => setConfirmPassword(e.target.value)}
+                       placeholder="Confirm your password"
+                       className="pr-10"
+                     />
+                   </div>
+                 </div>
+               </>
+             )}
 
             <Button
               type="submit"
