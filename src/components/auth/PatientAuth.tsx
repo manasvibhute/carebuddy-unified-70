@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Eye, EyeOff, Fingerprint, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { VoiceInput } from "../voice/VoiceInput";
 import { VoiceButton } from "../voice/VoiceButton";
 import { BiometricAuth } from "./BiometricAuth";
 import { useBiometricAuth } from "@/hooks/useBiometricAuth";
@@ -25,15 +24,14 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showBiometric, setShowBiometric] = useState(false);
   const [useBiometric, setUseBiometric] = useState(false);
+
   const { toast } = useToast();
-  const { isAvailable, getBiometryTypeName } = useBiometricAuth();
+  const { isAvailable: isAvailableBiometric, getBiometryTypeName } = useBiometricAuth();
 
   useEffect(() => {
     // Reset biometric state when switching between login/signup
-    if (!isLogin) {
-      setUseBiometric(false);
-      setShowBiometric(false);
-    }
+    setUseBiometric(false);
+    setShowBiometric(false);
   }, [isLogin]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -79,16 +77,31 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   };
 
   const handleBiometricLogin = () => {
+    if (!isAvailableBiometric) {
+      toast({
+        title: "Biometrics Not Available",
+        description: "Please use email and password login",
+        variant: "destructive",
+      });
+      return;
+    }
     setShowBiometric(true);
+    setUseBiometric(true);
   };
 
-  // Show biometric auth screen if available and requested
-  if (showBiometric && isAvailable && useBiometric) {
+  // Debug log
+  console.log("Render BiometricAuth?", showBiometric, useBiometric, isAvailableBiometric);
+
+  // Render biometric screen if requested
+  if (showBiometric && useBiometric && isAvailableBiometric) {
     return (
       <BiometricAuth
         onSuccess={handleBiometricSuccess}
         onFallback={handleBiometricFallback}
-        onCancel={onBack}
+        onCancel={() => {
+          setShowBiometric(false);
+          setUseBiometric(false);
+        }}
       />
     );
   }
@@ -118,17 +131,14 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
             </p>
           </div>
 
-          {isLogin && isAvailable && (
+          {isLogin && isAvailableBiometric && (
             <div className="mb-6">
               <Button
                 onClick={handleBiometricLogin}
                 className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white rounded-xl h-14 shadow-lg mb-3 transition-all duration-200 hover:scale-[1.02]"
               >
                 <div className="flex items-center justify-center gap-3">
-                  <div className="relative">
-                    <Fingerprint className="h-6 w-6" />
-                    <div className="absolute inset-0 animate-pulse bg-white/20 rounded-full"></div>
-                  </div>
+                  <Fingerprint className="h-6 w-6" />
                   <div className="text-left">
                     <div className="font-semibold">Use {getBiometryTypeName()}</div>
                     <div className="text-xs opacity-90">Tap and place your finger</div>
@@ -176,56 +186,52 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
                   className="absolute right-0 top-0 h-full px-3"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </Button>
               </div>
             </div>
 
-             {!isLogin && (
-               <>
-                 <div>
-                   <Label htmlFor="name">Full Name</Label>
-                   <Input
-                     id="name"
-                     type="text"
-                     value={name}
-                     onChange={(e) => setName(e.target.value)}
-                     placeholder="Enter your full name"
-                     className="mt-1"
-                   />
-                 </div>
+            {!isLogin && (
+              <>
+                <div>
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Enter your full name"
+                    className="mt-1"
+                  />
+                </div>
 
-                 <div>
-                   <Label htmlFor="phone">Phone Number</Label>
-                   <Input
-                     id="phone"
-                     type="tel"
-                     value={phone}
-                     onChange={(e) => setPhone(e.target.value)}
-                     placeholder="Enter your phone number"
-                     className="mt-1"
-                   />
-                 </div>
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Enter your phone number"
+                    className="mt-1"
+                  />
+                </div>
 
-                 <div>
-                   <Label htmlFor="confirmPassword">Confirm Password</Label>
-                   <div className="relative">
-                     <Input
-                       id="confirmPassword"
-                       type={showPassword ? "text" : "password"}
-                       value={confirmPassword}
-                       onChange={(e) => setConfirmPassword(e.target.value)}
-                       placeholder="Confirm your password"
-                       className="pr-10"
-                     />
-                   </div>
-                 </div>
-               </>
-             )}
+                <div>
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type={showPassword ? "text" : "password"}
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="Confirm your password"
+                      className="pr-10"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
 
             <Button
               type="submit"
@@ -239,17 +245,12 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
           <div className="text-center mt-4">
             <Button
               variant="link"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setUseBiometric(false);
-                setShowBiometric(false);
-              }}
+              onClick={() => setIsLogin(!isLogin)}
               className="text-primary"
             >
               {isLogin
                 ? "Don't have an account? Sign up"
-                : "Already have an account? Login"
-              }
+                : "Already have an account? Login"}
             </Button>
           </div>
 
