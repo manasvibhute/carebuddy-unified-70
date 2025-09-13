@@ -26,7 +26,8 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   const [useBiometric, setUseBiometric] = useState(false);
 
   const { toast } = useToast();
-  const { isAvailable: isAvailableBiometric, getBiometryTypeName } = useBiometricAuth();
+  const { isAvailable: biometricAvailable, getBiometryTypeName } = useBiometricAuth();
+  const isAvailableBiometric = true;
 
   useEffect(() => {
     // Reset biometric state when switching between login/signup
