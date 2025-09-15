@@ -13,6 +13,7 @@ interface BiometricAuthProps {
 }
 
 export const BiometricAuth = ({ onSuccess, onFallback, onCancel }: BiometricAuthProps) => {
+  console.log("BiometricAuth rendered");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const { isAvailable, biometryType, authenticate, getBiometryTypeName } = useBiometricAuth();
   const { toast } = useToast();
@@ -76,6 +77,7 @@ export const BiometricAuth = ({ onSuccess, onFallback, onCancel }: BiometricAuth
     <div className="min-h-screen bg-gradient-to-br from-medical-light-blue to-medical-light-green flex items-center justify-center p-4">
       <Card className="w-full max-w-md p-8 bg-card shadow-lg">
         <div className="text-center space-y-6">
+          <div style={{ color: 'red', fontWeight: 'bold' }}>BIOMETRIC AUTH UI RENDERED</div>
           <div className="flex justify-center">
             {getBiometricIcon()}
           </div>
