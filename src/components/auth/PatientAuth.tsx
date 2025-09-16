@@ -6,8 +6,6 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Eye, EyeOff, Fingerprint, Shield } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { VoiceButton } from "../voice/VoiceButton";
-import { BiometricAuth } from "./BiometricAuth";
-import { useBiometricAuth } from "@/hooks/useBiometricAuth";
 
 interface PatientAuthProps {
   onLogin: () => void;
@@ -22,17 +20,18 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showBiometric, setShowBiometric] = useState(false);
-  const [useBiometric, setUseBiometric] = useState(false);
+  const [showFingerprintModal, setShowFingerprintModal] = useState(false);
 
   const { toast } = useToast();
-  const { isAvailable: biometricAvailable, getBiometryTypeName } = useBiometricAuth();
-  const isAvailableBiometric = true;
 
   useEffect(() => {
-    // Reset biometric state when switching between login/signup
-    setUseBiometric(false);
-    setShowBiometric(false);
+    setName("");
+    setPhone("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setShowPassword(false);
+    setShowFingerprintModal(false);
   }, [isLogin]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,48 +63,14 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
     onLogin();
   };
 
-  const handleBiometricSuccess = () => {
-    toast({
-      title: "Biometric Login Successful",
-      description: "Welcome back!",
-    });
+  const handleFingerprintClick = () => {
+    setShowFingerprintModal(true);
+  };
+
+  const handleFingerprintImageClick = () => {
+    setShowFingerprintModal(false);
     onLogin();
   };
-
-  const handleBiometricFallback = () => {
-    setUseBiometric(false);
-    setShowBiometric(false);
-  };
-
-  const handleBiometricLogin = () => {
-    if (!isAvailableBiometric) {
-      toast({
-        title: "Biometrics Not Available",
-        description: "Please use email and password login",
-        variant: "destructive",
-      });
-      return;
-    }
-    setShowBiometric(true);
-    setUseBiometric(true);
-  };
-
-  // Debug log
-  console.log("Render BiometricAuth?", showBiometric, useBiometric, isAvailableBiometric);
-
-  // Render biometric screen if requested
-  if (showBiometric && useBiometric && isAvailableBiometric) {
-    return (
-      <BiometricAuth
-        onSuccess={handleBiometricSuccess}
-        onFallback={handleBiometricFallback}
-        onCancel={() => {
-          setShowBiometric(false);
-          setUseBiometric(false);
-        }}
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent/10 via-primary/5 to-medical-light-blue p-4 flex flex-col justify-center">
@@ -132,16 +97,16 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
             </p>
           </div>
 
-          {isLogin && isAvailableBiometric && (
+          {isLogin && (
             <div className="mb-6">
               <Button
-                onClick={handleBiometricLogin}
+                onClick={handleFingerprintClick}
                 className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white rounded-xl h-14 shadow-lg mb-3 transition-all duration-200 hover:scale-[1.02]"
               >
                 <div className="flex items-center justify-center gap-3">
                   <Fingerprint className="h-6 w-6" />
                   <div className="text-left">
-                    <div className="font-semibold">Use {getBiometryTypeName()}</div>
+                    <div className="font-semibold">Use Fingerprint</div>
                     <div className="text-xs opacity-90">Tap and place your finger</div>
                   </div>
                 </div>
@@ -259,12 +224,27 @@ export const PatientAuth = ({ onLogin, onBack }: PatientAuthProps) => {
             <div className="text-center mt-4 pt-4 border-t border-border">
               <p className="text-xs text-muted-foreground flex items-center justify-center gap-2">
                 <Shield className="h-3 w-3" />
-                Your biometric data is stored securely on your device
+                Your data is stored securely
               </p>
             </div>
           )}
         </Card>
       </div>
+
+      {/* Fingerprint Modal */}
+      {showFingerprintModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="flex flex-col items-center">
+            <img
+              src="https://tse4.mm.bing.net/th/id/OIP.JOTrHx5SqMTIZpPyQ0ylOgHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" // Replace with your image path
+              alt="Fingerprint"
+              className="rounded-full w-32 h-32 object-cover shadow-lg cursor-pointer border-4 border-primary"
+              onClick={handleFingerprintImageClick}
+            />
+            <p className="mt-4 text-white text-lg font-semibold">Tap fingerprint to login</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
