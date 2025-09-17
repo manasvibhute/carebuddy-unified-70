@@ -54,7 +54,6 @@
 //   );
 // };
 
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -107,7 +106,9 @@ export const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack })
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="p-4">
-        <Button onClick={onBack} variant="ghost" className="mb-4">Back</Button>
+        <Button onClick={onBack} className="mb-4 bg-green-600 hover:bg-green-700 text-white rounded-xl">
+          Back
+        </Button>
         <h2 className="text-2xl font-bold mb-2">{patient.name}</h2>
         <p className="mb-1">Age: {patient.age}</p>
         <p className="mb-1">Condition: {patient.condition}</p>
@@ -128,14 +129,14 @@ export const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack })
                 </div>
                 <div className="flex gap-2">
                   <Button
-                    variant="outline"
+                    className="bg-green-600 hover:bg-green-700 text-white rounded-xl"
                     size="sm"
                     onClick={() => handleDownload(doc)}
                   >
                     Download
                   </Button>
                   <Button
-                    variant="outline"
+                    className="bg-green-600 hover:bg-green-700 text-white rounded-xl"
                     size="sm"
                     onClick={() => handleView(doc)}
                   >
@@ -150,8 +151,7 @@ export const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack })
           <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
             <div className="bg-white rounded-lg p-4 max-w-2xl w-full relative">
               <Button
-                variant="ghost"
-                className="absolute top-2 right-2"
+                className="bg-green-600 hover:bg-green-700 text-white rounded-xl absolute top-2 right-2"
                 onClick={() => setViewDocUrl(null)}
               >
                 Close
