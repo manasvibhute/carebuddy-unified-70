@@ -55,6 +55,7 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
   const [orderId, setOrderId] = useState("");
   const [orderTotal, setOrderTotal] = useState(0);
 
+
   const dashboardCards = [
     {
       title: "Appointments",
@@ -97,7 +98,7 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
 
   const handleVoiceNavigation = (command: string) => {
     const cmd = command.toLowerCase();
-    
+
     if (cmd.includes('appointment')) {
       if (cmd.includes('book')) {
         setCurrentView("book-appointment");
@@ -134,8 +135,8 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
 
   if (currentView === "appointment-list") {
     return (
-      <AppointmentList 
-        onBack={handleBackToDashboard} 
+      <AppointmentList
+        onBack={handleBackToDashboard}
         onJoinCall={handleJoinCall}
       />
     );
@@ -313,8 +314,8 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
             {dashboardCards.map((card) => {
               const Icon = card.icon;
               return (
-                <Card 
-                  key={card.title} 
+                <Card
+                  key={card.title}
                   className={`p-6 cursor-pointer hover:shadow-lg transition-all duration-200 ${card.bgColor}`}
                   onClick={card.action}
                 >
@@ -333,6 +334,8 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
             })}
           </div>
         )}
+
+        
 
         {activeTab === "home" && (
           <div className="mt-6">
@@ -359,18 +362,24 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
         )}
 
         {activeTab === "appointments" && (
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-lg font-semibold text-foreground">Appointments</h2>
-              <button
-                onClick={() => setCurrentView("book-appointment")}
-                className="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-lg text-sm"
-              >
-                Book New
-              </button>
-            </div>
-            
-            <Card className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Book New Appointment Section */}
+            <Card className="p-6 bg-gradient-to-r from-primary-light to-accent-light">
+              <h3 className="font-semibold text-foreground mb-4 text-lg">Book New Appointment</h3>
+              <div className="space-y-3">
+                <button
+                  onClick={() => setCurrentView("book-appointment")}
+                  className="w-full p-4 text-left bg-white/90 hover:bg-white transition-colors rounded-xl shadow-sm"
+                >
+                  <p className="font-medium text-foreground text-lg">Schedule Appointment</p>
+                  <p className="text-sm text-muted-foreground">Choose a doctor and time slot</p>
+                </button>
+              </div>
+            </Card>
+
+            {/* Upcoming Appointments Section */}
+            <Card className="p-6">
+              <h3 className="font-semibold text-foreground mb-4 text-lg">Upcoming Appointments</h3>
               <div className="space-y-3">
                 <div className="border-l-4 border-primary pl-4 py-2">
                   <p className="font-medium">Dr. Smith - Cardiology</p>
@@ -380,6 +389,12 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
                   <p className="font-medium">Dr. Johnson - General</p>
                   <p className="text-sm text-muted-foreground">Friday, 2:00 PM</p>
                 </div>
+                <button
+                  onClick={() => setCurrentView("appointment-list")}
+                  className="w-full text-center py-3 text-primary font-medium hover:bg-white/50 rounded-lg transition-colors"
+                >
+                  View All Appointments
+                </button>
               </div>
             </Card>
           </div>
@@ -396,7 +411,7 @@ export const PatientDashboard = ({ onLogout }: PatientDashboardProps) => {
                 Scan New
               </button>
             </div>
-            
+
             <Card className="p-6 bg-accent-light">
               <div className="space-y-4">
                 <div className="border-l-4 border-primary pl-4 py-3 bg-white/80 rounded-r-lg">

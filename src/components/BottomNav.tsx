@@ -1,9 +1,11 @@
 import { Home, Calendar, FileText, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+type TabView = "home" | "appointments" | "reports" | "profile";
+
 interface BottomNavProps {
-  activeTab: string;
-  onTabChange: (tab: string) => void;
+  activeTab: TabView;
+  onTabChange: (tab: TabView) => void;
 }
 
 export const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
