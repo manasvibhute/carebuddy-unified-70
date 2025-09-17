@@ -132,6 +132,7 @@ interface Document {
   url?: string;
 }
 
+<<<<<<< HEAD
 interface Patient {
   id: string;
   name: string;
@@ -238,3 +239,5 @@ export const PatientDetail: React.FC<PatientDetailProps> = ({ patient, onBack })
     </div>
   );
 };
+
+export default HomePage;

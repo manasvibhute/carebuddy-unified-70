@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HomePage } from "@/components/HomePage";
+import  HomePage from "@/components/HomePage";
 import { RoleSelection } from "@/components/RoleSelection";
 import { LanguageSelection } from "@/components/LanguageSelection";
 import { PatientAuth } from "@/components/auth/PatientAuth";
