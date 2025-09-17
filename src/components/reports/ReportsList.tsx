@@ -12,12 +12,6 @@ interface Report {
   type: string;
   date: string;
   status: "new" | "viewed";
-  patient: {
-    name: string;
-    gender: string;
-    dob: string;
-    record: string;
-  };
 }
 
 interface ReportsListProps {
@@ -37,52 +31,28 @@ export const ReportsList = ({ onBack, onScanNew, onViewReport, reports = [] }: R
       name: "Blood Test Results",
       type: "Blood Test",
       date: "2024-01-15",
-      status: "new",
-      patient: {
-        name: "Sabrina Welder",
-        gender: "F",
-        dob: "April 8, 1993",
-        record: "00-991-23"
-      }
+      status: "new"
     },
     {
       id: "2",
       name: "Chest X-Ray",
       type: "X-Ray",
       date: "2024-01-10",
-      status: "viewed",
-      patient: {
-        name: "John Doe",
-        gender: "M",
-        dob: "May 12, 1987",
-        record: "01-234-56"
-      }
+      status: "viewed"
     },
     {
       id: "3",
       name: "MRI Brain Scan",
       type: "MRI",
       date: "2024-01-05",
-      status: "viewed",
-      patient: {
-        name: "Priya Singh",
-        gender: "F",
-        dob: "Nov 22, 1990",
-        record: "02-345-67"
-      }
+      status: "viewed"
     },
     {
       id: "4",
       name: "ECG Report",
       type: "ECG",
       date: "2024-01-01",
-      status: "viewed",
-      patient: {
-        name: "Alex Kim",
-        gender: "M",
-        dob: "Feb 3, 1975",
-        record: "03-456-78"
-      }
+      status: "viewed"
     },
     ...reports
   ];
@@ -251,9 +221,6 @@ export const ReportsList = ({ onBack, onScanNew, onViewReport, reports = [] }: R
                             New
                           </span>
                         )}
-                      </div>
-                      <div className="text-xs text-muted-foreground mb-1">
-                        Patient: {report.patient.name} &bull; {report.patient.gender} &bull; DOB: {report.patient.dob} &bull; Record: {report.patient.record}
                       </div>
                       <div className="flex items-center gap-2 mb-2">
                         <span className={`px-2 py-1 text-xs rounded-full ${getTypeColor(report.type)}`}>
