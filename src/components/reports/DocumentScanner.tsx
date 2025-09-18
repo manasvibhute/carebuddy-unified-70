@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Camera, Upload, RotateCcw, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,7 @@ interface DocumentScannerProps {
 export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) => {
   const [currentStep, setCurrentStep] = useState<"scan" | "crop" | "confirm">("scan");
   const [documentName, setDocumentName] = useState("");
+  const [preview, setPreview] = useState<string | null>(null);
 
   const handleScan = () => {
     // Mock scanning process
@@ -32,6 +33,22 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
     onComplete(newDocument);
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreview(objectUrl);
+      console.log("Selected file:", file.name);
+      setCurrentStep("crop");
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -49,13 +66,12 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
           {["scan", "crop", "confirm"].map((step, index) => (
             <div
               key={step}
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                currentStep === step
-                  ? "bg-primary text-primary-foreground"
-                  : index < ["scan", "crop", "confirm"].indexOf(currentStep)
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${currentStep === step
+                ? "bg-primary text-primary-foreground"
+                : index < ["scan", "crop", "confirm"].indexOf(currentStep)
                   ? "bg-accent text-accent-foreground"
                   : "bg-muted text-muted-foreground"
-              }`}
+                }`}
             >
               {index + 1}
             </div>
@@ -72,17 +88,26 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
               <p className="text-muted-foreground mb-6">
                 Place the document flat and ensure it's well-lit for best results
               </p>
-              
+
               {/* Mock camera preview */}
               <div className="bg-muted rounded-lg h-64 mb-6 flex items-center justify-center">
                 <p className="text-muted-foreground">Camera Preview</p>
               </div>
-              
+
               <div className="flex gap-3">
-                <Button variant="outline" className="flex-1">
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload File
-                </Button>
+                <>
+                  <input
+                    type="file"
+                    accept="image/*,application/pdf"
+                    ref={fileInputRef}
+                    onChange={handleFileSelect}
+                    className="hidden"
+                  />
+                  <Button variant="outline" className="flex-1" onClick={handleUploadClick}>
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload File
+                  </Button>
+                </>
                 <Button onClick={handleScan} className="flex-1">
                   <Camera className="h-4 w-4 mr-2" />
                   Capture
@@ -98,13 +123,17 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Adjust Document Edges
               </h2>
-              
+
               {/* Mock crop preview */}
               <div className="bg-muted rounded-lg h-64 mb-6 flex items-center justify-center relative">
-                <p className="text-muted-foreground">Document Preview</p>
+                {preview ? (
+                  <img src={preview} alt="Preview" className="object-contain h-full w-full" />
+                ) : (
+                  <p className="text-muted-foreground">Document Preview</p>
+                )}
                 <div className="absolute inset-4 border-2 border-primary border-dashed rounded"></div>
               </div>
-              
+
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setCurrentStep("scan")}>
                   <RotateCcw className="h-4 w-4 mr-2" />
@@ -125,14 +154,18 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
               <h2 className="text-xl font-semibold text-foreground mb-4">
                 Review & Upload
               </h2>
-              
+
               {/* Document preview */}
               <div className="bg-card rounded-lg p-4 mb-4 border border-border">
                 <div className="bg-muted rounded h-32 mb-3 flex items-center justify-center">
-                  <p className="text-muted-foreground">Final Document</p>
+                  {preview ? (
+                    <img src={preview} alt="Final Document" className="object-contain h-full w-full" />
+                  ) : (
+                    <p className="text-muted-foreground">Final Document</p>
+                  )}
                 </div>
               </div>
-              
+
               {/* Document details */}
               <div className="space-y-3 mb-6">
                 <input
@@ -150,7 +183,7 @@ export const DocumentScanner = ({ onComplete, onBack }: DocumentScannerProps) =>
                   <option>Other</option>
                 </select>
               </div>
-              
+
               <div className="flex gap-3">
                 <Button variant="outline" onClick={() => setCurrentStep("crop")}>
                   Back
