@@ -92,7 +92,7 @@ export const Cart = ({ onBack, onCheckout, items = [] }: CartProps) => {
                         {item.name}
                       </h3>
                       <p className="text-sm text-muted-foreground mb-2">
-                        ${item.price} each
+                        Rs.{item.price} each
                       </p>
                       {item.prescription && (
                         <p className="text-xs text-warning bg-warning/10 px-2 py-1 rounded inline-block">
@@ -133,7 +133,7 @@ export const Cart = ({ onBack, onCheckout, items = [] }: CartProps) => {
 
                     <div className="text-right">
                       <p className="font-semibold text-foreground">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        Rs.{(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -148,19 +148,19 @@ export const Cart = ({ onBack, onCheckout, items = [] }: CartProps) => {
               <div className="space-y-3">
                 <div className="flex justify-between text-foreground">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>Rs.{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-foreground">
                   <span>
                     Delivery Fee 
                     {subtotal > 50 && <span className="text-sm text-accent ml-1">(Free over $50)</span>}
                   </span>
-                  <span>{deliveryFee === 0 ? "Free" : `$${deliveryFee.toFixed(2)}`}</span>
+                  <span>{deliveryFee === 0 ? "Free" : `Rs.${deliveryFee.toFixed(2)}`}</span>
                 </div>
                 <div className="border-t border-border pt-3">
                   <div className="flex justify-between text-lg font-semibold text-foreground">
                     <span>Total</span>
-                    <span className="text-primary">${total.toFixed(2)}</span>
+                    <span className="text-primary">Rs.{total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

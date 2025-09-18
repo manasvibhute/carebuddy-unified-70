@@ -163,7 +163,7 @@ export const MedicineList = ({ onBack, onMedicineSelect, onCartOpen, cartCount }
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold text-primary">
-                        ${medicine.price}
+                        Rs.{medicine.price}
                       </p>
                     </div>
                   </div>
